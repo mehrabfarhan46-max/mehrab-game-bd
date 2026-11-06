@@ -37,11 +37,11 @@ async function seed() {
       ['Super Admin', adminEmail.toLowerCase(), passwordHash, 'superadmin']
     );
 
-    // Default settings
+    // Default settings with valid JSON format
     const settings = [
-      ['site_name', 'MEHRAB GAMING BD'],
-      ['currency', 'BDT'],
-      ['maintenance_mode', 'false']
+      ['site_name', JSON.stringify('MEHRAB GAMING BD')],
+      ['currency', JSON.stringify('BDT')],
+      ['maintenance_mode', JSON.stringify('false')]
     ];
 
     for (const [key, value] of settings) {
@@ -73,7 +73,6 @@ async function seed() {
     }
 
     await client.query('COMMIT');
-
     console.log('Database seed completed successfully.');
   } catch (error) {
     await client.query('ROLLBACK');
