@@ -48,12 +48,8 @@ const app = express();
 app.disable('x-powered-by');
 app.use(helmet());
 
-const allowedOrigin = process.env.CLIENT_ORIGIN;
-
 app.use(cors({
-  origin: allowedOrigin
-    ? allowedOrigin.split(',').map(origin => origin.trim())
-    : false,
+  origin: true,
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
