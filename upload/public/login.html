@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Login - MEHRAB GAMING BD</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #080d1b;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: #121e35;
+      border: 1px solid #263b5d;
+      border-radius: 18px;
+      padding: 28px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #405475;
+      border-radius: 9px;
+      background: #0b1428;
+      color: white;
+      font-size: 16px;
+    }
+
+    .password-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrap input {
+      padding-right: 50px;
+    }
+
+    .eye-button {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 22px;
+      border: 0;
+      border-radius: 9px;
+      background: #087fc0;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #34445f;
+    }
+
+    #googleButtonContainer {
+      display: flex;
+      justify-content: center;
+      min-height: 44px;
+      width: 100%;
+    }
+
+    #loginMessage {
+      text-align: center;
+      margin-top: 16px;
+      color: #fca5a5;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: #38bdf8;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="login-box">
+    <h1>Player Login</h1>
+    <p class="subtitle">MEHRAB GAMING BD</p>
+
+    <form id="playerLoginForm">
+      <label for="email">Email Address</label>
+      <input
+        id="email"
+        type="email"
+        required
+        autocomplete="email"
+        placeholder="Enter your email"
+      >
+
+      <label for="password">Password</label>
+
+      <div class="password-wrap">
+        <input
+          id="password"
+          type="password"
+          required
+          autocomplete="current-password"
+          placeholder="Enter your password"
+        >
+
+        <button
+          type="button"
+          class="eye-button"
+          id="togglePassword"
+          aria-label="Show password"
+        >👁️</button>
+      </div>
+
+      <button
+        class="login-button"
+        id="loginButton"
+        type="submit"
+      >
+        Login
+      </button>
+    </form>
+
+    <div class="divider">OR</div>
+
+    <div id="googleButtonContainer"></div>
+
+    <p id="loginMessage" role="status" aria-live="polite"></p>
+
+    <a class="back" href="index.html">← Back to Home</a>
+  </main>
+
+  <script>
+    window.GOOGLE_CLIENT_ID =
+      "193387052928-75919mn6gb25n21enahp3h692lq8qt4c.apps.googleusercontent.com";
+
+    window.googleLoginCallback = function(response) {
+      if (typeof window.handleGoogleLogin === "function") {
+        window.handleGoogleLogin(response);
+      } else {
+        document.getElementById("loginMessage").textContent =
+          "Login service is not ready. Please refresh.";
+      }
+    };
+
+    window.setupGoogleLogin = function() {
+      const container =
+        document.getElementById("googleButtonContainer");
+      const message =
+        document.getElementById("loginMessage");
+
+      if (!window.google ||
+          !window.google.accounts ||
+          !window.google.accounts.id) {
+        message.textContent =
+          "Google service could not load. Check your internet connection.";
+        return;
+      }
+
+      try {
+        google.accounts.id.initialize({
+          client_id: window.GOOGLE_CLIENT_ID,
+          callback: window.googleLoginCallback,
+          auto_select: false
+        });
+
+        google.accounts.id.renderButton(container, {
+          type: "standard",
+          theme: "outline",
+          size: "large",
+          shape: "rectangular",
+          text: "continue_with",
+          logo_alignment: "left",
+          width: 300
+        });
+
+        message.textContent = "";
+      } catch (error) {
+        message.textContent =
+          "Google button could not be initialized.";
+      }
+    };
+  </script>
+
+  <script
+    src="https://accounts.google.com/gsi/client?hl=en"
+    async
+    defer
+    onload="window.setupGoogleLogin()">
+  </script>
+
+  <script src="login.js"></script>
+
+  <script>
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+
+    togglePassword.addEventListener("click", function() {
+      const isHidden = passwordInput.type === "password";
+
+      passwordInput.type = isHidden ? "text" : "password";
+      togglePassword.textContent = isHidden ? "🙈" : "👁️";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        isHidden ? "Hide password" : "Show password"
+      );
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | MEHRAB GAMING BD</title>
+<link rel="stylesheet" href="../style.css">
+
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #17243b, #263b58, #17243b);
+}
+
+.site-header {
+  width: 100%;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #101c30;
+  border-bottom: 2px solid #00d6a0;
+  box-sizing: border-box;
+}
+
+.site-header .logo {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 27px;
+  font-weight: 900;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: 2px;
+}
+
+.site-header .logo span {
+  color: #00e0aa;
+}
+
+.login-wrapper {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 430px;
+  padding: 35px;
+  box-sizing: border-box;
+  background: #263750;
+  border: 1px solid #7186a3;
+  border-radius: 18px;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+}
+
+.login-box h1 {
+  color: white;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.login-box p {
+  color: #dce8f5;
+  margin-bottom: 25px;
+}
+
+.login-box label {
+  display: block;
+  color: white;
+  font-weight: 600;
+  margin: 17px 0 8px;
+}
+
+.login-box input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border-radius: 9px;
+  border: 1px solid #7186a3;
+  background: #ffffff;
+  color: #142238;
+  font-size: 15px;
+  outline: none;
+}
+
+.login-box input:focus {
+  border-color: #00e0aa;
+  box-shadow: 0 0 0 3px rgba(0,224,170,0.2);
+}
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 65px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto !important;
+  margin: 0 !important;
+  padding: 7px 9px !important;
+  background: #e8eef5 !important;
+  color: #17243b !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+}
+
+.login-box button#loginButton {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background: #00e0aa;
+  color: #09251e;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#message {
+  margin-top: 16px;
+  color: #ffb4b4;
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  .site-header .logo {
+    font-size: 21px;
+  }
+
+  .login-box {
+    padding: 25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../index.html">
+    MEHRAB <span>GAMING BD</span>
+  </a>
+</header>
+
+<main class="login-wrapper">
+  <section class="login-box">
+    <h1>Admin Login</h1>
+    <p>Sign in to manage your gaming platform.</p>
+
+    <form id="loginForm">
+      <label for="email">Admin Email</label>
+      <input type="email" id="email" required maxlength="254"
+      autocomplete="username">
+
+      <label for="password">Password</label>
+
+      <div class="password-wrap">
+        <input type="password" id="password" required maxlength="128"
+        autocomplete="current-password">
+
+        <button type="button" class="toggle-password"
+        id="togglePassword" aria-label="Show password">
+          Show
+        </button>
+      </div>
+
+      <button type="submit" id="loginButton">Login</button>
+      <div id="message" role="alert"></div>
+    </form>
+  </section>
+</main>
+
+<script>
+const passwordInput = document.getElementById('password');
+const togglePassword = document.getElementById('togglePassword');
+
+togglePassword.addEventListener('click', function () {
+  const showing = passwordInput.type === 'text';
+
+  passwordInput.type = showing ? 'password' : 'text';
+  togglePassword.textContent = showing ? 'Show' : 'Hide';
+  togglePassword.setAttribute(
+    'aria-label',
+    showing ? 'Show password' : 'Hide password'
+  );
+});
+</script>
+
+<script src="login.js"></script>
+</body>
+</html>

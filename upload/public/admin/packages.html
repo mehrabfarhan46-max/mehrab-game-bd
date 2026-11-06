@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Packages | MEHRAB GAMING BD</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #102b55, #176b62);
+      color: #172033;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 25px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+    }
+
+    h1 { color: #087b54; margin-top: 0; }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      margin: 7px 0 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    button {
+      border: 0;
+      padding: 11px 16px;
+      border-radius: 8px;
+      background: #087b54;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 3px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .secondary { background: #334155; }
+    .cancel { background: #dc2626; }
+    .edit { background: #2563eb; }
+
+    .package {
+      border: 1px solid #dbe3ec;
+      padding: 15px;
+      margin-top: 12px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .muted { color: #64748b; }
+    #message { margin: 15px 0; }
+
+    .form-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media(max-width: 500px) {
+      body { padding: 10px; }
+      .container { padding: 17px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <h1>💎 Package Management</h1>
+    <p class="muted">MEHRAB GAMING BD — Admin Panel</p>
+
+    <form id="packageForm">
+
+      <label for="name">Package Name (English)</label>
+      <input id="name" type="text"
+        placeholder="Example: 100 Diamonds" required>
+
+      <label for="name_bn">Package Name (Bangla)</label>
+      <input id="name_bn" type="text"
+        placeholder="বাংলায় প্যাকেজের নাম">
+
+      <label for="category">Package Category</label>
+      <select id="category" required>
+        <option value="diamonds">💎 Diamonds</option>
+        <option value="weekly">📅 Weekly</option>
+        <option value="monthly">🗓️ Monthly</option>
+        <option value="levelup">🚀 Level Up Pass</option>
+      </select>
+
+      <label for="diamonds">Diamond Amount</label>
+      <input id="diamonds" type="number" min="1"
+        placeholder="Example: 100" required>
+
+      <label for="price">Price (BDT)</label>
+      <input id="price" type="number" min="0"
+        step="0.01" placeholder="Example: 100" required>
+
+      <label for="image_url">Package Image URL</label>
+      <input id="image_url" type="url"
+        placeholder="https://example.com/image.png">
+
+      <label for="sort_order">Display Order</label>
+      <input id="sort_order" type="number" min="0"
+        value="0">
+
+      <div class="form-actions">
+        <button id="saveButton" type="submit">
+          Add Package
+        </button>
+
+        <button id="cancelEditButton"
+          class="cancel"
+          type="button"
+          hidden>
+          Cancel Edit
+        </button>
+      </div>
+
+    </form>
+
+    <div id="message" role="status"></div>
+
+    <hr>
+
+    <h2>All Packages</h2>
+
+    <button class="secondary" id="refreshButton" type="button">
+      Refresh Packages
+    </button>
+
+    <div id="packageList">
+      <p class="muted">Loading packages...</p>
+    </div>
+
+    <p><a href="dashboard.html">← Back to Dashboard</a></p>
+
+  </main>
+
+  <script src="packages.js"></script>
+</body>
+</html>

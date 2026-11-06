@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ব্যবহারকারীরা | MEHRAB GAMING BD</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      color: #172033;
+    }
+    .container {
+      max-width: 950px;
+      margin: 20px auto;
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+    }
+    h1 { color: #087b54; }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .back, button {
+      display: inline-block;
+      padding: 11px 15px;
+      border: 0;
+      border-radius: 8px;
+      background: #087b54;
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-size: 15px;
+    }
+    .user {
+      padding: 16px;
+      border: 1px solid #dbe3ec;
+      border-radius: 10px;
+      margin: 12px 0;
+      background: #f8fafc;
+    }
+    .user h3 { margin: 0 0 8px; }
+    .user p { margin: 5px 0; color: #475569; }
+    .profile {
+      margin-top: 10px;
+      background: #1769d2;
+    }
+    #message { margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="top">
+      <h1>👥 ব্যবহারকারীরা</h1>
+      <a class="back" href="dashboard.html">← Dashboard</a>
+    </div>
+
+    <p>MEHRAB GAMING BD — User Management</p>
+
+    <input
+      type="search"
+      id="search"
+      placeholder="নাম, ইমেইল অথবা User ID দিয়ে খুঁজুন"
+    >
+
+    <button id="refreshButton" type="button">তালিকা রিফ্রেশ</button>
+
+    <p id="message" role="status">তালিকা লোড হচ্ছে...</p>
+    <section id="userList"></section>
+  </main>
+
+  <script src="users.js"></script>
+</body>
+</html>

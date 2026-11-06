@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Matches | MEHRAB GAMING BD</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;padding:18px;background:#101522;color:#fff;font-family:Arial,sans-serif}
+    .container{max-width:650px;margin:auto}
+    h2{color:#42d392;text-align:center}
+    .card{background:#1c2638;padding:18px;border-radius:14px}
+    label{display:block;margin:14px 0 6px;font-size:14px}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #40506a;border-radius:8px;background:#111a2a;color:white;font-size:15px}
+    textarea{min-height:90px;resize:vertical}
+    button{width:100%;padding:14px;margin-top:18px;border:0;border-radius:9px;background:#20bd79;color:#07150e;font-weight:bold;font-size:16px}
+    #message{margin-top:15px;text-align:center;line-height:1.5}
+    .hint{color:#aab7ca;font-size:13px}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>MEHRAB GAMING BD</h2>
+  <div class="card">
+    <h3>Add New Match</h3>
+    <p class="hint">Select a category and enter the match information.</p>
+
+    <form id="matchForm">
+      <label>Match Name</label>
+      <input name="title_en" required placeholder="Example: Friday Battle">
+
+      <label>Match Name (Bangla)</label>
+      <input name="title_bn" placeholder="ম্যাচের নাম">
+
+      <label>Category</label>
+      <select name="category" id="category" required>
+        <option value="">Select Category</option>
+        <option value="solo_br">Solo BR</option>
+        <option value="duo_br">Duo BR</option>
+        <option value="pro_league">Pro League</option>
+        <option value="lone_wolf">Lone Wolf</option>
+        <option value="lone_wolf_headshot">Lone Wolf Headshot</option>
+        <option value="survival_br">Survival BR</option>
+        <option value="cs_4v4">CS 4v4</option>
+        <option value="cs_4v4_headshot">CS 4v4 Headshot</option>
+      </select>
+
+      <label>Match Mode</label>
+      <select name="mode" id="mode" required disabled>
+        <option value="">Select Category First</option>
+      </select>
+      <p class="hint" id="modeHint">Category select korle mode automatically set hobe.</p>
+
+      <label>Date and Time</label>
+      <input type="datetime-local" name="starts_at" required>
+
+      <label>Map Name</label>
+      <input name="map_name" placeholder="Example: Bermuda">
+
+      <label>Maximum Players</label>
+      <input type="number" name="max_players" min="1" max="10000" required placeholder="Example: 48">
+
+      <label>Total Prize</label>
+      <input name="prize_info" placeholder="Example: 1000 BDT">
+
+      <label>Entry Fee (BDT)</label>
+      <input type="number" name="entry_fee" min="0" max="10000000" step="0.01" value="0" required placeholder="0">
+
+      <label>Per Kill Prize (BDT)</label>
+      <input type="number" name="per_kill_prize" min="0" step="0.01" value="0">
+
+      <label>Winning Prize (BDT)</label>
+      <input type="number" name="winning_prize" min="0" step="0.01" value="0">
+
+      <label>Rules</label>
+      <textarea name="rules" placeholder="Write match rules..."></textarea>
+
+      <label>Tutorial Video URL</label>
+      <input type="url" name="tutorial_video_url" placeholder="https://...">
+
+      <button type="submit" id="submitButton">ADD MATCH</button>
+    </form>
+
+    <div id="message"></div>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById("matchForm");
+const message = document.getElementById("message");
+const categorySelect = document.getElementById("category");
+const modeSelect = document.getElementById("mode");
+const modeHint = document.getElementById("modeHint");
+const submitButton = document.getElementById("submitButton");
+
+const categoryModes = {
+  solo_br: ["solo", "Solo"],
+  duo_br: ["duo", "Duo"],
+  pro_league: ["squad", "Squad"],
+  lone_wolf: ["duo", "Duo"],
+  lone_wolf_headshot: ["duo", "Duo"],
+  survival_br: ["solo", "Solo"],
+  cs_4v4: ["4v4", "4v4"],
+  cs_4v4_headshot: ["4v4", "4v4"]
+};
+
+categorySelect.addEventListener("change", function() {
+  const selected = categoryModes[this.value];
+
+  modeSelect.innerHTML = "";
+
+  if (!selected) {
+    modeSelect.disabled = true;
+    modeSelect.add(new Option("Select Category First", ""));
+    modeHint.textContent = "Category select korle mode automatically set hobe.";
+    return;
+  }
+
+  modeSelect.disabled = false;
+  modeSelect.add(new Option(selected[1], selected[0]));
+  modeSelect.value = selected[0];
+  modeHint.textContent = "Selected mode: " + selected[1];
+});
+
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const token =
+    localStorage.getItem("adminToken") ||
+    localStorage.getItem("token");
+
+  if (!token) {
+    message.textContent = "Admin login token not found. Please login first.";
+    return;
+  }
+
+  const data = Object.fromEntries(new FormData(form).entries());
+
+  data.max_players = Number(data.max_players);
+  data.entry_fee = Number(data.entry_fee);
+  data.per_kill_prize = Number(data.per_kill_prize);
+  data.winning_prize = Number(data.winning_prize);
+
+  if (!categoryModes[data.category] ||
+      data.mode !== categoryModes[data.category][0]) {
+    message.textContent = "Please select a valid category and mode.";
+    return;
+  }
+
+  if (data.starts_at) {
+    const date = new Date(data.starts_at);
+
+    if (Number.isNaN(date.getTime())) {
+      message.textContent = "Invalid match date and time.";
+      return;
+    }
+
+    data.starts_at = date.toISOString();
+  }
+
+  submitButton.disabled = true;
+  submitButton.textContent = "ADDING...";
+  message.textContent = "Adding match...";
+
+  try {
+    const response = await fetch("http://localhost:4000/api/admin/tournaments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || result.error || "Could not add match.");
+    }
+
+    message.textContent = "Match added successfully!";
+    form.reset();
+
+    modeSelect.disabled = true;
+    modeSelect.innerHTML = "";
+    modeSelect.add(new Option("Select Category First", ""));
+    modeHint.textContent = "Category select korle mode automatically set hobe.";
+
+  } catch (error) {
+    message.textContent = "Error: " + error.message;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "ADD MATCH";
+  }
+});
+</script>
+</body>
+</html>

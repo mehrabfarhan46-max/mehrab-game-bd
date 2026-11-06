@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d1b">
+  <title>Tournament Registration - MEHRAB GAMING BD</title>
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#080d1b;color:white;font-family:Arial,sans-serif;padding:16px}
+    .container{max-width:600px;margin:25px auto;background:#121e35;border:1px solid #263b5d;border-radius:14px;padding:24px}
+    h1{color:#38bdf8;text-align:center;margin-bottom:12px}
+    .subtitle{text-align:center;color:#cbd5e1;margin-bottom:25px;line-height:1.6}
+    label{display:block;margin:17px 0 7px;font-weight:bold}
+    input,select{width:100%;padding:13px;border:1px solid #405475;border-radius:7px;background:#0b1428;color:white;font-size:15px}
+    input:focus,select:focus{outline:2px solid #38bdf8}
+    .note{background:#0b2940;border:1px solid #17618a;padding:13px;border-radius:8px;color:#cdeeff;line-height:1.7;margin-top:20px}
+    button{width:100%;padding:14px;margin-top:22px;background:#087fc0;border:0;border-radius:8px;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .back{display:block;text-align:center;margin-top:20px;color:#38bdf8;text-decoration:none}
+    .message{text-align:center;margin-top:15px;line-height:1.5;color:#cbd5e1}
+    .info{color:#7dd3fc;font-size:13px;margin-top:8px;line-height:1.5}
+    [hidden]{display:none!important}
+  </style>
+</head>
+
+<body>
+<main class="container">
+  <h1>Tournament Registration</h1>
+
+  <p class="subtitle">
+    MEHRAB GAMING BD<br>
+    Register for your selected match.
+  </p>
+
+  <form id="registrationForm">
+    <label for="tournament_id">Tournament ID</label>
+    <input type="text" id="tournament_id" required readonly>
+
+    <label for="ff_name">Your Free Fire Game Name</label>
+    <input
+      type="text"
+      id="ff_name"
+      maxlength="50"
+      required
+      placeholder="Enter your in-game name">
+
+    <section id="participationSection" hidden>
+      <label for="participation_type">Participation Type</label>
+      <select id="participation_type">
+        <option value="solo">Solo — Automatic Pairing</option>
+        <option value="friend_pair">Join with Friend</option>
+      </select>
+      <p class="info">
+        Solo players will be paired automatically with another Solo player.
+      </p>
+    </section>
+
+    <section id="friendFields" hidden>
+      <label for="friend_name">Friend's Free Fire Game Name</label>
+      <input
+        type="text"
+        id="friend_name"
+        maxlength="50"
+        placeholder="Enter friend's in-game name">
+      <p class="info">
+        Your friend does not need a website account or UID.
+        Both names will stay together as one pair.
+      </p>
+    </section>
+
+    <div class="note">
+      Entry Fee: Free<br>
+      Registration will be connected to your player account.<br>
+      Room ID and Password will be shown only to confirmed players.
+      <br>
+      Join the Free Fire Custom Room yourself using the Room ID and Password
+      when the admin releases them.
+    </div>
+
+    <button type="submit" id="submitButton">
+      CONFIRM REGISTRATION
+    </button>
+
+    <p class="message" id="registrationMessage"></p>
+  </form>
+
+  <a class="back" id="backLink" href="tournaments.html">
+    ← Back to Match
+  </a>
+</main>
+
+<script>
+const API = 'http://localhost:4000/api/tournaments';
+
+const params = new URLSearchParams(location.search);
+const tournamentId = params.get('id');
+
+const form = document.getElementById('registrationForm');
+const tournamentInput = document.getElementById('tournament_id');
+const participationSection = document.getElementById('participationSection');
+const typeSelect = document.getElementById('participation_type');
+const friendFields = document.getElementById('friendFields');
+const friendName = document.getElementById('friend_name');
+const submitButton = document.getElementById('submitButton');
+const message = document.getElementById('registrationMessage');
+
+tournamentInput.value = tournamentId || '';
+
+document.getElementById('backLink').href = tournamentId
+  ? `match-details.html?id=${encodeURIComponent(tournamentId)}`
+  : 'tournaments.html';
+
+const duoCategories = [
+  'duo_br',
+  'lone_wolf',
+  'lone_wolf_headshot'
+];
+
+let isDuoCategory = false;
+
+function updateParticipationFields() {
+  const isFriendPair =
+    isDuoCategory && typeSelect.value === 'friend_pair';
+
+  friendFields.hidden = !isFriendPair;
+  friendName.required = isFriendPair;
+}
+
+async function loadTournament() {
+  if (!tournamentId) {
+    message.textContent = 'Tournament ID is missing.';
+    submitButton.disabled = true;
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `http://localhost:4000/api/public/tournaments`
+    );
+
+    if (!response.ok) {
+      throw new Error('Could not load tournament information.');
+    }
+
+    const data = await response.json();
+    const tournaments = Array.isArray(data)
+      ? data
+      : data.tournaments || [];
+
+    const tournament = tournaments.find(
+      item => String(item.id) === String(tournamentId)
+    );
+
+    if (!tournament) {
+      throw new Error('Tournament not found.');
+    }
+
+    isDuoCategory = duoCategories.includes(
+      String(tournament.category || '').toLowerCase()
+    );
+
+    participationSection.hidden = !isDuoCategory;
+
+    if (!isDuoCategory) {
+      typeSelect.value = 'solo';
+    }
+
+    updateParticipationFields();
+
+  } catch (error) {
+    message.textContent = error.message;
+    submitButton.disabled = true;
+  }
+}
+
+typeSelect.addEventListener('change', updateParticipationFields);
+
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+
+  if (!tournamentId) {
+    message.textContent = 'Tournament ID is missing.';
+    return;
+  }
+
+  const token = sessionStorage.getItem('playerToken');
+
+  if (!token) {
+    location.href =
+      `login.html?next=${encodeURIComponent(
+        'registration.html' + location.search
+      )}`;
+    return;
+  }
+
+  const type = isDuoCategory
+    ? typeSelect.value
+    : 'solo';
+
+  const registration = {
+    tournament_id: tournamentId,
+    ff_ingame_name: document.getElementById('ff_name').value.trim(),
+    participation_type: type
+  };
+
+  if (type === 'friend_pair') {
+    registration.friend_ingame_name = friendName.value.trim();
+
+    if (!registration.friend_ingame_name) {
+      message.textContent = "Please enter your friend's game name.";
+      return;
+    }
+
+    if (
+      registration.friend_ingame_name.toLowerCase() ===
+      registration.ff_ingame_name.toLowerCase()
+    ) {
+      message.textContent = 'Your friend name must be different.';
+      return;
+    }
+  }
+
+  submitButton.disabled = true;
+  submitButton.textContent = 'PLEASE WAIT...';
+  message.textContent = '';
+
+  try {
+    const response = await fetch(API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(registration)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Registration failed.');
+    }
+
+    message.textContent = data.message ||
+      'Registration submitted successfully!';
+
+    form.reset();
+    tournamentInput.value = tournamentId;
+    participationSection.hidden = !isDuoCategory;
+    updateParticipationFields();
+
+  } catch (error) {
+    message.textContent =
+      error.message || 'Could not submit registration.';
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = 'CONFIRM REGISTRATION';
+  }
+});
+
+if (!sessionStorage.getItem('playerToken')) {
+  location.replace(
+    `login.html?next=${encodeURIComponent(
+      'registration.html' + location.search
+    )}`
+  );
+} else {
+  loadTournament();
+}
+</script>
+</body>
+</html>

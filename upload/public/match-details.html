@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match Details - MEHRAB GAMING BD</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.details-page{max-width:850px;margin:auto;padding:16px 14px 115px;color:#222}
+.details-card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:18px;margin:15px 0}
+.details-header{text-align:center;padding:18px 10px}
+.details-header h1{margin:8px 0}
+.match-number{color:#666;font-weight:bold}
+.details-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.detail-item{background:#f4f4f4;padding:13px;border-radius:8px;min-width:0}
+.detail-item small{display:block;color:#777;margin-bottom:6px}
+.detail-item strong{font-size:16px;overflow-wrap:anywhere}
+.detail-section h2{font-size:19px;border-bottom:1px solid #ddd;padding-bottom:10px}
+.back-link{display:inline-block;margin:8px 0 12px;color:inherit;text-decoration:none;font-weight:bold}
+.tutorial-link{display:inline-block;margin-top:10px;color:#1769aa;font-weight:bold;overflow-wrap:anywhere}
+.detail-message{text-align:center;padding:12px;color:#777}
+.room-value{font-size:19px;color:#146b35;overflow-wrap:anywhere}
+.room-waiting{background:#f4f4f4;padding:13px;border-radius:8px;line-height:1.6;color:#666}
+.participant-count{font-size:14px;color:#555;margin-bottom:12px}
+.participant-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.participant-item{background:#f4f4f4;border-radius:8px;padding:11px;overflow-wrap:anywhere}
+.participant-item strong{font-size:14px}
+.empty-participants{text-align:center;color:#777;padding:16px}
+.sticky-join{position:fixed;left:0;right:0;bottom:0;z-index:1000;background:#101322;padding:12px 15px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -3px 12px #0003}
+.sticky-inner{max-width:850px;margin:auto}
+.join-button{display:block;width:100%;padding:16px;background:#ffeb3b;color:#111;border:0;border-radius:10px;font-size:20px;font-weight:900;letter-spacing:4px}
+.join-button:disabled{opacity:.75;cursor:not-allowed}
+.join-button.closed{background:#d92d35;color:white}
+.join-button.joined{background:#176b39;color:white;letter-spacing:1px}
+.sticky-room{display:none;background:#e9f8ed;border:1px solid #a8d9b7;border-radius:10px;padding:12px;color:#155b2d}
+.sticky-room strong{display:block;margin-bottom:6px}
+.sticky-room p{margin:5px 0;overflow-wrap:anywhere}
+.join-modal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9999;display:none;align-items:center;justify-content:center;padding:12px}
+.join-modal.show{display:flex}
+.join-box{background:#fff;color:#111;width:100%;max-width:520px;border-radius:25px;padding:22px 20px 28px;max-height:90vh;overflow-y:auto}
+.join-box h2{text-align:center;font-size:27px;margin:0 0 18px;padding-bottom:15px;border-bottom:2px solid #ddd}
+.confirm-match{background:#eee;border-radius:15px;padding:16px;margin-bottom:18px}
+.confirm-match strong{display:block;font-size:19px;margin-bottom:10px}
+.confirm-row{display:flex;justify-content:space-between;gap:10px;border-top:1px dashed #555;padding:9px 0;font-size:16px}
+.spots-badge{display:inline-block;background:#666;color:white;padding:9px 15px;border-radius:7px;margin-top:7px;font-weight:bold}
+.participation-options{display:flex;margin:12px 0 18px;border:2px solid #222;border-radius:12px;overflow:hidden}
+.type-option{flex:1;border:0;background:#eee;padding:15px 8px;font-weight:900;font-size:17px}
+.type-option+.type-option{border-left:2px solid #222}
+.type-option.active{background:#ffeb3b;color:#111}
+.player-fields{margin:12px 0}
+.player-label{font-weight:bold;margin:10px 0 3px;display:block}
+.total-fee{text-align:center;font-size:20px;margin:20px 0}
+.join-input{width:100%;box-sizing:border-box;padding:15px 14px;border:2px solid #999;border-radius:9px;font-size:16px;margin:7px 0 12px;outline:none}
+.join-input:focus{border-color:#222}
+.confirm-button{display:block;width:100%;margin:18px auto 0;background:#ffeb3b;color:#111;border:0;border-radius:13px;padding:16px 20px;font-size:20px;font-weight:900;letter-spacing:3px;box-shadow:0 4px 7px #aaa}
+.confirm-button:disabled{opacity:.6}
+.cancel-button{display:block;margin:12px auto 0;background:transparent;border:0;color:#555;font-size:15px;padding:8px}
+.modal-message{text-align:center;color:#b00020;font-size:14px;margin-top:12px;line-height:1.5}
+@media(max-width:420px){
+.details-grid{grid-template-columns:1fr 1fr}
+.detail-item{padding:10px}
+.detail-item strong{font-size:14px}
+.join-box{padding:20px 16px}
+.confirm-match strong{font-size:17px}
+.participant-list{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+<a class="logo" href="index.html">MEHRAB <span>GAMING BD</span></a>
+<nav>
+<a href="index.html">Home</a>
+<a href="tournaments.html">Tournament</a>
+<a href="diamonds.html">Diamonds</a>
+<a href="likes.html">Likes</a>
+</nav>
+</header>
+
+<main class="details-page">
+
+<a class="back-link" id="back-link" href="tournaments.html">← Back to Matches</a>
+
+<section class="details-header">
+<p class="eyebrow">TOURNAMENT DETAILS</p>
+<p class="match-number" id="match-number">Match Number: —</p>
+<h1 id="match-title">Loading Match...</h1>
+<p id="match-category"></p>
+<p id="match-status"></p>
+</section>
+
+<section class="details-card">
+<div class="details-grid">
+<div class="detail-item"><small>Match Date</small><strong id="match-date">—</strong></div>
+<div class="detail-item"><small>Match Time</small><strong id="match-time">—</strong></div>
+<div class="detail-item"><small>Map</small><strong id="match-map">—</strong></div>
+<div class="detail-item"><small>Mode</small><strong id="match-mode">—</strong></div>
+<div class="detail-item"><small>Entry Fee</small><strong id="entry-fee">—</strong></div>
+<div class="detail-item"><small>Maximum Players</small><strong id="match-slots">—</strong></div>
+</div>
+</section>
+
+<section class="details-card detail-section">
+<h2>Prize Information</h2>
+<div class="details-grid">
+<div class="detail-item"><small>Prize Pool</small><strong id="prize-pool">Not announced</strong></div>
+<div class="detail-item"><small>Per Kill</small><strong id="per-kill">Not announced</strong></div>
+<div class="detail-item"><small>Winning Prize</small><strong id="winning-prize">Not announced</strong></div>
+</div>
+</section>
+
+<section class="details-card detail-section">
+<h2>Participants</h2>
+<p class="participant-count" id="participant-count">Loading players...</p>
+<div class="participant-list" id="participant-list">
+<p class="empty-participants">Loading...</p>
+</div>
+</section>
+
+<section class="details-card detail-section">
+<h2>Rules & Regulations</h2>
+<p id="match-rules">Rules will be announced by the organizer.</p>
+</section>
+
+<section class="details-card detail-section">
+<h2>Tutorial Video</h2>
+<p id="tutorial-message">No tutorial video added yet.</p>
+<a id="tutorial-link" class="tutorial-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Watch Tutorial Video</a>
+</section>
+
+<p class="detail-message" id="details-message"></p>
+
+</main>
+
+<div class="sticky-join">
+  <div class="sticky-inner">
+    <button class="join-button" id="join-button" disabled>LOADING...</button>
+    <div class="sticky-room" id="sticky-room">
+      <strong>Room Information</strong>
+      <p id="sticky-room-id">Room ID: Waiting</p>
+      <p id="sticky-room-password">Password: Waiting</p>
+    </div>
+  </div>
+</div>
+
+<div class="join-modal" id="join-modal">
+<div class="join-box">
+<h2>Confirmation</h2>
+
+<div class="participation-options" id="participation-options" hidden>
+<button type="button" class="type-option active" id="solo-option">SOLO</button>
+<button type="button" class="type-option" id="pair-option">DUO</button>
+</div>
+
+<div class="player-fields" id="player-fields"></div>
+
+<div class="confirm-match">
+<strong id="confirm-match-title">Match</strong>
+<div class="confirm-row">
+<span>Entry Fee:</span>
+<b id="confirm-entry-fee">৳0</b>
+</div>
+<span class="spots-badge" id="confirm-spots">Maximum Slots: —</span>
+</div>
+
+<p class="total-fee">Total Entry Fee: <b id="total-fee">৳0</b></p>
+
+<button class="confirm-button" id="confirm-button" type="button">✔ CONFIRM</button>
+<button class="cancel-button" id="cancel-button" type="button">Cancel</button>
+<p class="modal-message" id="modal-message"></p>
+</div>
+</div>
+
+<footer>
+<p>© 2026 MEHRAB GAMING BD</p>
+</footer>
+
+<script>
+  const API_URL = 'http://localhost:4000/api';
+const PUBLIC_API = `${API_URL}/public/tournaments`;
+const PARTICIPANTS_API = `${API_URL}/public/tournaments`;
+const JOIN_API = `${API_URL}/tournaments`;
+
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+const categoryFromUrl = params.get('category');
+
+const el = name => document.getElementById(name);
+
+let currentMatch = null;
+let selectedType = 'solo';
+let isJoined = false;
+let participantsData = { players: [], joined_players: 0, max_players: 0 };
+
+const duoCategories = [
+  'duo_br',
+  'lone_wolf',
+  'lone_wolf_headshot'
+];
+
+const squadCategories = [
+  'pro_league',
+  'cs_4v4',
+  'cs_4v4_headshot'
+];
+
+const soloCategories = ['solo_br', 'survival_br'];
+
+const backLink = el('back-link');
+
+if (categoryFromUrl) {
+  backLink.href =
+    `tournament-list.html?category=${encodeURIComponent(categoryFromUrl)}`;
+}
+
+function money(value) {
+  if (value === null || value === undefined || value === '') return 'Not announced';
+  return '৳' + Number(value).toLocaleString();
+}
+
+function textValue(value) {
+  return value === null || value === undefined || value === ''
+    ? 'Not announced'
+    : String(value);
+}
+
+function getCategory(match) {
+  return String(match.category || '').toLowerCase();
+}
+
+function getRequiredPlayers() {
+  if (!currentMatch) return 1;
+  const category = getCategory(currentMatch);
+
+  if (duoCategories.includes(category)) {
+    return selectedType === 'friend_pair' ? 2 : 1;
+  }
+
+  if (squadCategories.includes(category)) return 4;
+  return 1;
+}
+
+function renderPlayerFields() {
+  const count = getRequiredPlayers();
+  const container = el('player-fields');
+  container.replaceChildren();
+
+  for (let i = 0; i < count; i++) {
+    const label = document.createElement('label');
+    label.className = 'player-label';
+    label.textContent = count === 1
+      ? 'Free Fire Game Name'
+      : i === 0
+        ? 'Captain Game Name'
+        : `Player ${i + 1} Game Name`;
+
+    const input = document.createElement('input');
+    input.className = 'join-input';
+    input.type = 'text';
+    input.maxLength = 50;
+    input.autocomplete = 'off';
+    input.placeholder = count === 1
+      ? 'Enter your Game Name'
+      : `Enter Player ${i + 1} Game Name`;
+    input.dataset.playerIndex = String(i);
+
+    container.append(label, input);
+  }
+}
+
+function updateTotalFee() {
+  if (!currentMatch) return;
+  const fee = Number(currentMatch.entry_fee || 0);
+  el('total-fee').textContent = money(fee * getRequiredPlayers());
+  el('solo-option').classList.toggle('active', selectedType === 'solo');
+  el('pair-option').classList.toggle('active', selectedType === 'friend_pair');
+}
+
+function renderJoinButton() {
+  const button = el('join-button');
+  const room = el('sticky-room');
+  const status = String(currentMatch?.status || '').toLowerCase();
+
+  if (isJoined) {
+    button.style.display = 'none';
+    room.style.display = 'block';
+    return;
+  }
+
+  room.style.display = 'none';
+  button.style.display = 'block';
+
+  const maximum = Number(currentMatch?.max_players || 0);
+  const occupied = Number(participantsData.joined_players || 0);
+  const full = maximum > 0 && occupied >= maximum;
+
+  if (full || status === 'completed' || status === 'cancelled') {
+    button.textContent = 'CLOSED';
+    button.classList.add('closed');
+    button.disabled = true;
+  } else if (status === 'upcoming') {
+    button.textContent = 'JOIN';
+    button.classList.remove('closed');
+    button.disabled = false;
+  } else {
+    button.textContent = 'JOINING CLOSED';
+    button.classList.add('closed');
+    button.disabled = true;
+  }
+}
+
+function openJoinPopup() {
+  if (!currentMatch || isJoined) return;
+
+  const token = sessionStorage.getItem('playerToken');
+
+  if (!token) {
+    location.href = 'login.html?next=' +
+      encodeURIComponent(location.pathname + location.search);
+    return;
+  }
+
+  if (Number(participantsData.joined_players) >= Number(currentMatch.max_players)) {
+    renderJoinButton();
+    return;
+  }
+
+  selectedType = 'solo';
+
+  el('confirm-match-title').textContent =
+    (currentMatch.title_en || currentMatch.title_bn || 'Tournament Match') +
+    ' | Match No. ' + (currentMatch.match_number || currentMatch.id);
+
+  el('confirm-entry-fee').textContent =
+    Number(currentMatch.entry_fee || 0) === 0
+      ? 'Free'
+      : money(currentMatch.entry_fee);
+
+  el('confirm-spots').textContent =
+    'Maximum Slots: ' + textValue(currentMatch.max_players);
+
+  el('participation-options').hidden =
+    !duoCategories.includes(getCategory(currentMatch));
+
+  renderPlayerFields();
+  updateTotalFee();
+
+  el('modal-message').textContent = '';
+  el('modal-message').style.color = '#b00020';
+  el('confirm-button').disabled = false;
+  el('confirm-button').textContent = '✔ CONFIRM';
+  el('join-modal').classList.add('show');
+}
+
+function closeJoinPopup() {
+  el('join-modal').classList.remove('show');
+}
+
+function showRoomWaiting(message) {
+  el('sticky-room-id').textContent = message || 'Room ID: Waiting for Admin';
+  el('sticky-room-password').textContent = 'Password: Waiting for Admin';
+}
+
+async function loadRoomInformation() {
+  const token = sessionStorage.getItem('playerToken');
+
+  if (!token) return false;
+
+  try {
+    const response = await fetch(
+      `${JOIN_API}/${encodeURIComponent(id)}/room`,
+      {
+        method: 'GET',
+        headers: { Authorization: 'Bearer ' + token },
+        cache: 'no-store'
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) return false;
+
+    const room = data.room || data;
+
+    isJoined = true;
+
+    if (room.room_id && room.room_password) {
+      el('sticky-room-id').textContent = 'Room ID: ' + room.room_id;
+      el('sticky-room-password').textContent = 'Password: ' + room.room_password;
+    } else {
+      showRoomWaiting('Room ID: Waiting for Admin');
+    }
+
+    renderJoinButton();
+    return true;
+
+  } catch (error) {
+    return false;
+  }
+}
+
+async function loadParticipants() {
+  try {
+    const response = await fetch(
+      `${PARTICIPANTS_API}/${encodeURIComponent(id)}/participants`,
+      { cache: 'no-store' }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error('Participants unavailable');
+    }
+
+    participantsData = data;
+
+    const players = Array.isArray(data.players) ? data.players : [];
+    const list = el('participant-list');
+    list.replaceChildren();
+
+    el('participant-count').textContent =
+      `${data.joined_players} / ${data.max_players} Players Joined`;
+
+    if (!players.length) {
+      const empty = document.createElement('p');
+      empty.className = 'empty-participants';
+      empty.textContent = 'No players have joined yet.';
+      list.appendChild(empty);
+    } else {
+      players.forEach((player, index) => {
+        const item = document.createElement('div');
+        item.className = 'participant-item';
+
+        const name = document.createElement('strong');
+        name.textContent = `${index + 1}. ${player}`;
+
+        item.appendChild(name);
+        list.appendChild(item);
+      });
+    }
+
+    renderJoinButton();
+
+  } catch (error) {
+    el('participant-count').textContent =
+      'Participant information is not available right now.';
+    el('participant-list').innerHTML =
+      '<p class="empty-participants">Could not load participants.</p>';
+  }
+}
+
+async function loadDetails() {
+  if (!id) {
+    el('match-title').textContent = 'Match not found';
+    el('details-message').textContent = 'Match ID is missing.';
+    return;
+  }
+
+  try {
+    const response = await fetch(PUBLIC_API, { cache: 'no-store' });
+    if (!response.ok) throw new Error('Request failed');
+
+    const data = await response.json();
+    if (!data.success) throw new Error('Could not load matches');
+
+    const matches = data.tournaments || [];
+    currentMatch = matches.find(item => String(item.id) === String(id));
+
+    if (!currentMatch) throw new Error('Match not found');
+
+    if (!categoryFromUrl && currentMatch.category) {
+      backLink.href =
+        `tournament-list.html?category=${encodeURIComponent(currentMatch.category)}`;
+    }
+
+    const date = new Date(currentMatch.starts_at);
+
+    el('match-number').textContent =
+      'Match Number: ' + textValue(currentMatch.match_number);
+
+    el('match-title').textContent =
+      currentMatch.title_en || currentMatch.title_bn || 'Tournament Match';
+
+    el('match-category').textContent = textValue(currentMatch.category);
+    el('match-status').textContent = textValue(currentMatch.status).toUpperCase();
+
+    el('match-date').textContent =
+      Number.isNaN(date.getTime()) ? 'Not announced' : date.toLocaleDateString();
+
+    el('match-time').textContent =
+      Number.isNaN(date.getTime())
+        ? 'Not announced'
+        : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    el('match-map').textContent = textValue(currentMatch.map_name);
+    el('match-mode').textContent = textValue(currentMatch.mode);
+
+    el('entry-fee').textContent =
+      Number(currentMatch.entry_fee || 0) === 0
+        ? 'Free Entry'
+        : money(currentMatch.entry_fee);
+
+    el('match-slots').textContent = textValue(currentMatch.max_players);
+    el('prize-pool').textContent = textValue(currentMatch.prize_info);
+
+    el('per-kill').textContent =
+      currentMatch.per_kill_prize == null
+        ? 'Not announced'
+        : money(currentMatch.per_kill_prize);
+
+    el('winning-prize').textContent =
+      currentMatch.winning_prize == null
+        ? 'Not announced'
+        : money(currentMatch.winning_prize);
+
+    el('match-rules').textContent =
+      currentMatch.rules || 'Rules will be announced by the organizer.';
+
+    if (currentMatch.tutorial_video_url) {
+      el('tutorial-link').href = currentMatch.tutorial_video_url;
+      el('tutorial-link').hidden = false;
+      el('tutorial-message').textContent = 'Tutorial video is available.';
+    }
+
+    renderJoinButton();
+    await loadParticipants();
+    await loadRoomInformation();
+
+  } catch (error) {
+    el('match-title').textContent = 'Match Details';
+    el('details-message').textContent =
+      'Match details could not load. Backend connection is required.';
+  }
+}
+
+el('join-button').addEventListener('click', openJoinPopup);
+el('cancel-button').addEventListener('click', closeJoinPopup);
+
+el('join-modal').addEventListener('click', event => {
+  if (event.target === el('join-modal')) closeJoinPopup();
+});
+
+el('solo-option').addEventListener('click', () => {
+  selectedType = 'solo';
+  renderPlayerFields();
+  updateTotalFee();
+});
+
+el('pair-option').addEventListener('click', () => {
+  selectedType = 'friend_pair';
+  renderPlayerFields();
+  updateTotalFee();
+});
+
+el('confirm-button').addEventListener('click', async () => {
+  const token = sessionStorage.getItem('playerToken');
+
+  if (!token) {
+    location.href = 'login.html?next=' +
+      encodeURIComponent(location.pathname + location.search);
+    return;
+  }
+
+  const inputs = [...el('player-fields').querySelectorAll('input')];
+  const playerNames = inputs.map(input => input.value.trim());
+
+  if (playerNames.some(name => !name)) {
+    el('modal-message').textContent = 'Please enter all required Game Names.';
+    return;
+  }
+
+  const category = getCategory(currentMatch);
+  let participationType = 'solo';
+
+  if (squadCategories.includes(category)) {
+    participationType = 'team';
+  } else if (duoCategories.includes(category) && selectedType === 'friend_pair') {
+    participationType = 'friend_pair';
+  }
+
+  const button = el('confirm-button');
+  button.disabled = true;
+  button.textContent = 'Joining...';
+  el('modal-message').textContent = '';
+
+  try {
+    const res = await fetch(JOIN_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        tournament_id: Number(id),
+        participation_type: participationType,
+        player_names: playerNames
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Registration failed.');
+    }
+
+    closeJoinPopup();
+    alert(data.message || 'Successfully registered for match!');
+    await loadDetails();
+
+  } catch (err) {
+    el('modal-message').textContent = err.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = '✔ CONFIRM';
+  }
+});
+
+loadDetails();
+</script>
+</body>
+</html>

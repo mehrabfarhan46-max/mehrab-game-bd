@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Orders | MEHRAB GAMING BD</title>
+<link rel="stylesheet" href="../style.css">
+
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #17243b, #263b58);
+  color: white;
+}
+
+.site-header {
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #101c30;
+  border-bottom: 2px solid #00d6a0;
+}
+
+.site-header .logo {
+  text-align: center;
+  font-size: 27px;
+  font-weight: 900;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 2px;
+}
+
+.site-header .logo span {
+  color: #00e0aa;
+}
+
+.admin-layout {
+  max-width: 1000px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.admin-layout h1 {
+  font-size: 30px;
+}
+
+.subtitle {
+  color: #c6d4e5;
+}
+
+.order-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 25px;
+}
+
+.order-card {
+  background: #263750;
+  border: 1px solid #526783;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.order-card h3 {
+  color: #00e0aa;
+  margin-bottom: 15px;
+}
+
+.order-card p {
+  color: #e0e9f5;
+  margin: 9px 0;
+  overflow-wrap: anywhere;
+}
+
+.status {
+  color: #00e0aa !important;
+  font-weight: bold;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 13px 20px;
+  background: #00d6a0;
+  color: #09251e;
+  border-radius: 9px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#message {
+  color: #ffb4b4;
+  margin-top: 18px;
+}
+
+@media (max-width: 550px) {
+  .site-header .logo {
+    font-size: 21px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <a class="logo" href="../index.html">
+    MEHRAB <span>GAMING BD</span>
+  </a>
+</header>
+
+<main class="admin-layout">
+
+  <p style="color:#00e0aa;font-weight:bold;">
+    ADMIN CONTROL PANEL
+  </p>
+
+  <h1>Manage Orders</h1>
+  <p class="subtitle">Latest 50 customer orders</p>
+
+  <section id="orderList" class="order-list">
+    <p>Loading orders...</p>
+  </section>
+
+  <p id="message" role="alert"></p>
+
+  <a class="back-link" href="dashboard.html">
+    ← Back to Dashboard
+  </a>
+
+</main>
+
+<script src="orders.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | MEHRAB GAMING BD</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #102b55, #176b62);
+      color: #172033;
+    }
+    .container {
+      max-width: 950px;
+      margin: 25px auto;
+      padding: 25px;
+      background: #fff;
+      border-radius: 16px;
+    }
+    h1 { color: #087b54; margin-top: 0; }
+    .muted { color: #64748b; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin: 25px 0;
+    }
+    .stat {
+      padding: 18px;
+      border: 1px solid #dbe3ec;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+    .stat h2 { margin: 0 0 8px; font-size: 16px; }
+    .number {
+      font-size: 28px;
+      font-weight: bold;
+      color: #087b54;
+    }
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    a, button {
+      display: block;
+      padding: 13px;
+      border: 0;
+      border-radius: 9px;
+      background: #087b54;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    a.likes-link { background: #1769d2; }
+    a.users-link { background: #7c3aed; }
+    button.secondary { background: #334155; }
+    #message { margin: 15px 0; }
+    @media(max-width: 500px) {
+      body { padding: 10px; }
+      .container { padding: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>🎮 MEHRAB GAMING BD</h1>
+    <h2>Admin Dashboard</h2>
+    <p class="muted">Manage your gaming platform from here.</p>
+
+    <p id="adminProfile" class="muted">Loading admin profile...</p>
+
+    <section class="stats">
+      <div class="stat">
+        <h2>Users</h2>
+        <div class="number" id="users">0</div>
+      </div>
+      <div class="stat">
+        <h2>Orders</h2>
+        <div class="number" id="orders">0</div>
+      </div>
+      <div class="stat">
+        <h2>Tournaments</h2>
+        <div class="number" id="tournaments">0</div>
+      </div>
+      <div class="stat">
+        <h2>Packages</h2>
+        <div class="number" id="packages">0</div>
+      </div>
+    </section>
+
+    <h2>Management</h2>
+    <div class="links">
+      <a href="users.html" class="users-link">👥 Manage Users</a>
+      <a href="orders.html">📦 Manage Orders</a>
+      <a href="tournaments.html">🏆 Manage Tournaments</a>
+      <a href="packages.html">💎 Manage Diamond Packages</a>
+      <a href="likes.html" class="likes-link">❤️ Manage Likes Packages</a>
+    </div>
+
+    <div id="message" role="status"></div>
+
+    <button class="secondary" id="refreshButton" type="button">
+      Refresh Dashboard
+    </button>
+
+    <button id="logoutButton" type="button"
+      style="margin-top:12px;background:#dc2626;">
+      Logout
+    </button>
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101322">
+  <title>Match List - MEHRAB GAMING BD</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body { padding-bottom: 25px; }
+    .match-page { max-width:950px; margin:auto; padding:20px 14px 45px; }
+    .back-link { display:inline-block; margin:8px 0 12px; color:inherit; text-decoration:none; font-weight:bold; }
+    .match-heading { text-align:center; margin:20px 0 25px; }
+    .match-heading h1 { margin-bottom:8px; }
+    .match-tabs { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin-bottom:22px; }
+    .match-tab { padding:10px 18px; border:1px solid #ccc; border-radius:7px; background:white; color:#222; cursor:pointer; }
+    .match-tab.active { background:#222; color:white; }
+    .match-card { background:white; border:1px solid #ddd; border-radius:12px; padding:16px; margin-bottom:15px; color:#222; }
+    .match-card-top { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+    .match-card-top h3 { margin:0; }
+    .match-number { font-size:12px; color:#666; margin:0 0 6px; }
+    .match-status { font-size:12px; padding:5px 10px; border-radius:20px; background:#eee; }
+    .match-info-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:15px 0; }
+    .match-info { background:#f5f5f5; border-radius:7px; padding:10px; min-width:0; }
+    .match-info small { display:block; color:#777; margin-bottom:5px; }
+    .match-info strong { font-size:14px; overflow-wrap:anywhere; }
+    .match-view { display:block; text-align:center; padding:12px; border-radius:7px; background:#222; color:white; text-decoration:none; margin-top:12px; }
+
+    .room-box { margin-top:14px; padding:13px; border-radius:9px; background:#eef6ff; border:1px solid #c7ddf5; }
+    .room-box h4 { margin:0 0 9px; color:#173b61; }
+    .room-line { margin:7px 0; overflow-wrap:anywhere; color:#222; }
+    .room-line strong { color:#173b61; }
+    .room-message { color:#555; font-size:13px; margin:0; }
+    .room-hidden { display:none; }
+
+    .match-message { text-align:center; padding:25px 10px; color:#777; }
+
+    @media(max-width:420px) {
+      .match-info-grid { grid-template-columns:1fr 1fr; }
+      .match-tab { padding:9px 12px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">
+    MEHRAB <span>GAMING BD</span>
+  </a>
+  <nav>
+    <a href="tournaments.html">Tournament</a>
+    <a href="diamonds.html">Diamonds</a>
+    <a href="likes.html">Likes</a>
+  </nav>
+</header>
+
+<main class="match-page">
+
+  <a class="back-link" id="back-link" href="tournaments.html">
+    ← Back to Categories
+  </a>
+
+  <div class="match-heading">
+    <p class="eyebrow">MEHRAB GAMING BD</p>
+    <h1 id="category-title">Tournament Matches</h1>
+    <p>Choose your match and view complete details.</p>
+  </div>
+
+  <div class="match-tabs">
+    <button class="match-tab active" data-status="all">All Matches</button>
+    <button class="match-tab" data-status="upcoming">Upcoming</button>
+    <button class="match-tab" data-status="live">Live</button>
+    <button class="match-tab" data-status="completed">Completed</button>
+  </div>
+
+  <section id="match-list">
+    <p class="match-message">Loading matches...</p>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 MEHRAB GAMING BD</p>
+</footer>
+
+<script>
+const API = 'http://localhost:4000/api';
+const PUBLIC_API = `${API}/public/tournaments`;
+const ROOM_API = `${API}/tournaments`;
+
+const params = new URLSearchParams(window.location.search);
+const category = params.get('category');
+
+const categoryNames = {
+  solo_br: 'Solo BR',
+  duo_br: 'Duo BR',
+  pro_league: 'Pro League',
+  lone_wolf: 'Lone Wolf',
+  lone_wolf_headshot: 'Lone Wolf Headshot',
+  survival_br: 'Survival BR',
+  cs_4v4: 'CS 4v4',
+  cs_4v4_headshot: 'CS 4v4 Headshot'
+};
+
+const title = document.getElementById('category-title');
+const list = document.getElementById('match-list');
+
+title.textContent = categoryNames[category] || 'Tournament Matches';
+
+let allMatches = [];
+let selectedStatus = 'all';
+
+function textValue(value) {
+  return value === null || value === undefined || value === ''
+    ? 'Not announced'
+    : String(value);
+}
+
+function money(value) {
+  if (value === null || value === undefined || value === '') {
+    return 'Not announced';
+  }
+
+  return '৳' + Number(value).toLocaleString();
+}
+
+function formatDate(value) {
+  if (!value) return 'Not announced';
+
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime())
+    ? 'Not announced'
+    : date.toLocaleString();
+}
+
+function createRoomBox(matchId) {
+  const box = document.createElement('div');
+  box.className = 'room-box';
+
+  const heading = document.createElement('h4');
+  heading.textContent = 'Room Information';
+
+  const message = document.createElement('p');
+  message.className = 'room-message';
+  message.textContent = 'Checking room information...';
+
+  box.append(heading, message);
+
+  loadRoomInformation(matchId, box, message);
+
+  return box;
+}
+
+async function loadRoomInformation(matchId, box, message) {
+  const token = sessionStorage.getItem('playerToken');
+
+  if (!token) {
+    message.textContent = 'Login করে এই ম্যাচে Join করলে Room ID ও Password দেখতে পারবে।';
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${ROOM_API}/${encodeURIComponent(matchId)}/room`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token
+        },
+        cache: 'no-store'
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success || !data.room) {
+      message.textContent = 'এই ম্যাচে Join করা থাকলে Admin Room Information প্রকাশ করার পর এখানে দেখা যাবে।';
+      return;
+    }
+
+    const roomId = data.room.room_id;
+    const roomPassword = data.room.room_password;
+
+    if (!roomId || !roomPassword) {
+      message.textContent = 'Admin এখনো Room Information প্রকাশ করেননি।';
+      return;
+    }
+
+    message.textContent = '';
+
+    const roomLine = document.createElement('p');
+    roomLine.className = 'room-line';
+
+    const roomLabel = document.createElement('strong');
+    roomLabel.textContent = 'Room ID: ';
+
+    const roomValue = document.createElement('span');
+    roomValue.textContent = roomId;
+
+    roomLine.append(roomLabel, roomValue);
+
+    const passwordLine = document.createElement('p');
+    passwordLine.className = 'room-line';
+
+    const passwordLabel = document.createElement('strong');
+    passwordLabel.textContent = 'Password: ';
+
+    const passwordValue = document.createElement('span');
+    passwordValue.textContent = roomPassword;
+
+    passwordLine.append(passwordLabel, passwordValue);
+
+    message.remove();
+    box.append(roomLine, passwordLine);
+
+  } catch (error) {
+    message.textContent = 'Room Information এখন লোড করা যাচ্ছে না।';
+  }
+}
+
+function showMatches() {
+  list.replaceChildren();
+
+  const matches = allMatches.filter(match => {
+    const categoryMatch = match.category === category;
+
+    const statusMatch =
+      selectedStatus === 'all' || match.status === selectedStatus;
+
+    return categoryMatch && statusMatch;
+  });
+
+  if (!matches.length) {
+    const message = document.createElement('p');
+    message.className = 'match-message';
+    message.textContent = 'No matches available in this category.';
+    list.appendChild(message);
+    return;
+  }
+
+  matches.forEach(match => {
+    const card = document.createElement('article');
+    card.className = 'match-card';
+
+    const number = document.createElement('p');
+    number.className = 'match-number';
+    number.textContent = 'Match No: ' + textValue(match.match_number);
+
+    const top = document.createElement('div');
+    top.className = 'match-card-top';
+
+    const name = document.createElement('h3');
+    name.textContent =
+      match.title_en || match.title_bn || 'Tournament Match';
+
+    const status = document.createElement('span');
+    status.className = 'match-status';
+    status.textContent = textValue(match.status).toUpperCase();
+
+    top.append(name, status);
+
+    const info = document.createElement('div');
+    info.className = 'match-info-grid';
+
+    const fields = [
+      ['Date & Time', formatDate(match.starts_at)],
+      ['Map', textValue(match.map_name)],
+      ['Mode', textValue(match.mode)],
+      ['Prize Pool', textValue(match.prize_info)],
+      ['Winning Prize', money(match.winning_prize)],
+      ['Per Kill', money(match.per_kill_prize)],
+      [
+        'Entry Fee',
+        Number(match.entry_fee || 0) === 0
+          ? 'Free Entry'
+          : money(match.entry_fee)
+      ],
+      ['Maximum Players', textValue(match.max_players)]
+    ];
+
+    fields.forEach(([label, value]) => {
+      const item = document.createElement('div');
+      item.className = 'match-info';
+
+      const small = document.createElement('small');
+      small.textContent = label;
+
+      const strong = document.createElement('strong');
+      strong.textContent = value;
+
+      item.append(small, strong);
+      info.appendChild(item);
+    });
+
+    const view = document.createElement('a');
+    view.className = 'match-view';
+    view.href =
+      `match-details.html?id=${encodeURIComponent(match.id)}&category=${encodeURIComponent(category)}`;
+    view.textContent = 'VIEW MATCH DETAILS';
+
+    card.append(number, top, info);
+
+    // Room credentials are requested separately from the protected API.
+    card.appendChild(createRoomBox(match.id));
+
+    card.appendChild(view);
+    list.appendChild(card);
+  });
+}
+
+document.querySelectorAll('.match-tab').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.match-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+
+    button.classList.add('active');
+    selectedStatus = button.dataset.status;
+    showMatches();
+  });
+});
+
+async function loadMatches() {
+  if (!categoryNames[category]) {
+    list.textContent = 'Invalid tournament category.';
+    return;
+  }
+
+  try {
+    const response = await fetch(PUBLIC_API, {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      throw new Error('Could not load matches');
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error('Could not load matches');
+    }
+
+    allMatches = data.tournaments || [];
+    showMatches();
+
+  } catch (error) {
+    list.textContent =
+      'Matches could not load. Backend connection is required.';
+  }
+}
+
+loadMatches();
+</script>
+
+</body>
+</html>

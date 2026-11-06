@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>Free Fire Diamonds - MEHRAB GAMING BD</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      background: #f5f7fb;
+      color: #202536;
+      font-family: Arial, sans-serif;
+    }
+
+    .diamond-header {
+      background: #fff;
+      padding: 16px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #e8eaf0;
+      box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    }
+
+    .diamond-header .logo {
+      color: #202536;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .diamond-header .logo span {
+      color: #2878f0;
+    }
+
+    .diamond-nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .diamond-nav a {
+      color: #555e70;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .diamond-nav a.active,
+    .diamond-nav a:hover {
+      color: #2878f0;
+    }
+
+    .diamond-container {
+      width: 90%;
+      max-width: 1100px;
+      margin: 30px auto;
+    }
+
+    .diamond-banner {
+      background: linear-gradient(120deg, #eaf2ff, #f5f8ff);
+      border: 1px solid #dce8ff;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 25px;
+    }
+
+    .diamond-banner .eyebrow {
+      color: #2878f0;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .diamond-banner h1 {
+      font-size: 28px;
+      margin: 10px 0;
+      color: #202536;
+    }
+
+    .diamond-banner p {
+      color: #687287;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .store-section {
+      background: #fff;
+      padding: 22px;
+      border-radius: 14px;
+      border: 1px solid #e8eaf0;
+      margin-bottom: 22px;
+    }
+
+    .store-section h2 {
+      font-size: 19px;
+      margin: 0 0 16px;
+      color: #202536;
+    }
+
+    .store-categories {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .store-category {
+      padding: 11px 17px;
+      border: 1px solid #e0e5ef;
+      border-radius: 9px;
+      background: #fff;
+      color: #465168;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .store-category.active {
+      background: #2878f0;
+      color: #fff;
+      border-color: #2878f0;
+    }
+
+    .store-info {
+      color: #727d91;
+      font-size: 13px;
+      line-height: 1.7;
+      margin-top: 15px;
+    }
+
+    #diamond-packages {
+      margin-top: 15px;
+    }
+
+    .store-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .store-link {
+      display: inline-block;
+      padding: 12px 18px;
+      background: #2878f0;
+      color: #fff;
+      border-radius: 9px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .store-link.secondary {
+      background: #eef3fc;
+      color: #2878f0;
+    }
+
+    .store-footer {
+      text-align: center;
+      padding: 25px 12px;
+      color: #81899a;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .diamond-header {
+        padding: 15px 5%;
+      }
+
+      .diamond-nav {
+        width: 100%;
+        gap: 14px;
+      }
+
+      .diamond-banner {
+        padding: 21px;
+      }
+
+      .diamond-banner h1 {
+        font-size: 23px;
+      }
+
+      .store-section {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="diamond-header">
+    <a class="logo" href="index.html">
+      MEHRAB <span>GAMING BD</span>
+    </a>
+
+    <nav class="diamond-nav">
+      <a href="index.html">Home</a>
+      <a href="tournaments.html">Tournament</a>
+      <a href="diamonds.html" class="active">Diamonds</a>
+      <a href="likes.html">Likes</a>
+    </nav>
+  </header>
+
+  <main class="diamond-container">
+
+    <section class="diamond-banner">
+      <p class="eyebrow">MEHRAB GAMING BD STORE</p>
+      <h1>Free Fire Diamonds 💎</h1>
+      <p>
+        Choose your package and continue with your order.
+        Fast and secure service.
+      </p>
+    </section>
+
+    <section class="store-section">
+      <h2>Choose Category</h2>
+
+      <div class="store-categories">
+        <button class="store-category active" type="button"
+          data-category="diamonds">💎 Diamonds</button>
+
+        <button class="store-category" type="button"
+          data-category="weekly">📅 Weekly</button>
+
+        <button class="store-category" type="button"
+          data-category="monthly">🗓️ Monthly</button>
+
+        <button class="store-category" type="button"
+          data-category="levelup">🚀 Level Up Pass</button>
+      </div>
+
+      <p class="store-info">
+        Select a category to view its available packages.
+        Package availability depends on the active store products.
+      </p>
+    </section>
+
+    <section class="store-section">
+      <h2 id="package-heading">💎 Diamond Packages</h2>
+
+      <div class="service-grid" id="diamond-packages">
+        <p>Loading packages...</p>
+      </div>
+    </section>
+
+    <section class="store-section" id="likes">
+      <h2>👍 Free Fire Likes</h2>
+
+      <p class="store-info">
+        Likes service is separate from Diamond packages.
+        Visit the Likes Store to explore available offers.
+      </p>
+
+      <div class="store-actions">
+        <a class="store-link" href="likes.html">
+          Open Likes Store
+        </a>
+      </div>
+    </section>
+
+    <section class="store-section">
+      <h2>My Store</h2>
+
+      <div class="store-actions">
+        <a class="store-link" href="index.html">Home</a>
+        <a class="store-link secondary" href="likes.html">Likes</a>
+        <a class="store-link secondary" href="tournaments.html">
+          Tournament
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="store-footer">
+    © 2026 MEHRAB GAMING BD. All rights reserved.
+  </footer>
+
+  <script src="diamonds.js"></script>
+
+</body>
+</html>
